@@ -1,0 +1,21 @@
+// SCSS variables and tokens. Forwarded into every component via
+// _global.scss + Nuxt's vite additionalData, so any `<style>` block
+// can read these without an explicit @use. CSS-emitting foundations
+// live under foundations/ and are imported once from main.scss.
+
+// Layout
+$max-content-width: 56rem;
+$gutter: clamp(1.25rem, 4vw, 2.5rem);
+$breakpoint-tablet: 48rem;
+$breakpoint-desktop: 72rem;
+
+// Type scale (rem)
+$type-hero: clamp(2.5rem, 6vw + 1rem, 4.5rem);
+$type-body: 1.0625rem;
+$type-small: 0.875rem;
+$type-micro: 0.75rem;
+
+// Motion
+$transition-fast: 200ms;
+$transition: 320ms;
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);

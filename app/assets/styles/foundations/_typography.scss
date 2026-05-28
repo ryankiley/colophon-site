@@ -1,0 +1,27 @@
+@use "../vars" as *;
+
+// System font stack. Zero font payload — reinforces the "native
+// Apple-platforms reading client" framing. Same stack iOS/macOS use
+// for their own UI text.
+
+:root {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+    "Helvetica", "Arial", sans-serif;
+  --font-serif: ui-serif, "New York", "Iowan Old Style", Georgia, "Times New Roman", serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: #{$type-body};
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
