@@ -1,10 +1,8 @@
 <script setup lang="ts">
-usePageSetup({
-  seoMeta: {
-    description:
-      "A calm, content-first RSS and newsletter reader for iPhone and iPad. Now in TestFlight.",
-  },
-});
+// Home page inherits the default title + description from the SEO plugin;
+// usePageSetup still sets canonical + og:url. SITE_URL / TESTFLIGHT_URL
+// are auto-imported from app/utils/site.
+usePageSetup();
 
 // SoftwareApplication schema — gives search engines + AI agents the
 // metadata they need to surface the app as a product entity (name,
@@ -16,9 +14,9 @@ useStructuredData({
   operatingSystem: "iOS 26.0+",
   description:
     "A calm, content-first RSS and newsletter reader for iPhone and iPad.",
-  url: "https://colophonrss.app",
-  downloadUrl: "https://testflight.apple.com/join/xCmmRp7d",
-  installUrl: "https://testflight.apple.com/join/xCmmRp7d",
+  url: SITE_URL,
+  downloadUrl: TESTFLIGHT_URL,
+  installUrl: TESTFLIGHT_URL,
   releaseNotes: "Internal alpha — invite-only via TestFlight.",
   author: {
     "@type": "Person",
@@ -39,7 +37,6 @@ useStructuredData({
       <svg
         viewBox="0 0 1024 1024"
         xmlns="http://www.w3.org/2000/svg"
-        class="app-icon"
       >
         <defs>
           <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
@@ -75,7 +72,7 @@ useStructuredData({
 
     <a
       class="hero__cta"
-      href="https://testflight.apple.com/join/xCmmRp7d"
+      :href="TESTFLIGHT_URL"
       rel="noopener"
     >
       Join the TestFlight
@@ -100,14 +97,13 @@ useStructuredData({
   min-height: 80dvh;
 }
 
-// First-paint reveal — staggered fade-up of the hero pieces. Mirrors
-// the portfolio's reveal easing (Material classic ease-out, gentler
-// than the GSAP expo curve we use elsewhere) but skips IntersectionObserver
-// since every hero element is above the fold.
+// First-paint reveal — staggered fade-up of the hero pieces using the
+// Material classic ease-out ($ease-reveal). No IntersectionObserver:
+// every hero element is above the fold.
 .hero > * {
   opacity: 0;
   transform: translateY(0.75rem);
-  animation: hero-rise 720ms cubic-bezier(0, 0, 0.2, 1) forwards;
+  animation: hero-rise $duration-reveal $ease-reveal forwards;
 }
 
 .hero__icon { animation-delay: 80ms; }

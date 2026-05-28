@@ -1,10 +1,9 @@
 <script setup lang="ts">
+// CONTACT_EMAIL is auto-imported from app/utils/site.
 usePageSetup({
-  seoMeta: {
-    title: "Privacy",
-    description:
-      "Colophon collects no analytics, ships no third-party trackers, and keeps every byte of article content on your device.",
-  },
+  title: "Privacy",
+  description:
+    "Colophon collects no analytics, ships no third-party trackers, and keeps every byte of article content on your device.",
 });
 
 const lastUpdated = "May 28, 2026";
@@ -20,7 +19,7 @@ const lastUpdated = "May 28, 2026";
       <p class="privacy__updated">Last updated {{ lastUpdated }}</p>
     </header>
 
-    <section class="privacy__intro">
+    <section>
       <p>
         Colophon is a reading app. It collects no analytics, ships no
         third-party trackers, and keeps every byte of article content on your
@@ -53,7 +52,7 @@ const lastUpdated = "May 28, 2026";
       <p>
         See Vercel's
         <a href="https://vercel.com/docs/analytics/privacy-policy" rel="noopener">Analytics privacy policy</a>
-        for the underlying behavior. The iOS app itself collects none of this.
+        for the underlying behaviour. The iOS app itself collects none of this.
       </p>
     </section>
 
@@ -67,7 +66,7 @@ const lastUpdated = "May 28, 2026";
       </p>
       <p>
         AI summaries are generated on-device using Apple's Foundation Models
-        framework. Article text never leaves your device for summarization, and
+        framework. Article text never leaves your device for summarisation, and
         summaries are not persisted to CloudKit.
       </p>
     </section>
@@ -133,7 +132,7 @@ const lastUpdated = "May 28, 2026";
       <h2>Contact</h2>
       <p>
         Questions about privacy or the app:
-        <a href="mailto:ryanekiley@gmail.com">ryanekiley@gmail.com</a>.
+        <a :href="`mailto:${CONTACT_EMAIL}`">{{ CONTACT_EMAIL }}</a>.
       </p>
     </section>
   </article>

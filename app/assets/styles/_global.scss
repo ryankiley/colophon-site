@@ -1,9 +1,8 @@
 // Global stylesheet entry point.
 //
 // Injected into every component's `<style>` block via Nuxt's vite
-// additionalData. Only forward SCSS variables and mixins here — never
-// CSS-emitting modules, which would duplicate rules inside every
-// scoped style block and create specificity conflicts with the
-// global styles loaded once from main.scss.
+// additionalData. Only forward SCSS variables here — never CSS-emitting
+// modules, which would duplicate rules inside every scoped style block
+// and create specificity conflicts with the global styles loaded once
+// from main.scss.
 @forward "vars";
-@forward "mixins";
