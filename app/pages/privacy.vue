@@ -1,12 +1,10 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: "Privacy — Colophon",
-  description:
-    "Colophon collects no analytics, ships no third-party trackers, and keeps every byte of article content on your device.",
-  ogTitle: "Privacy — Colophon",
-  ogDescription:
-    "Colophon collects no analytics, ships no third-party trackers, and keeps every byte of article content on your device.",
-  ogUrl: "https://colophonrss.app/privacy",
+usePageSetup({
+  seoMeta: {
+    title: "Privacy",
+    description:
+      "Colophon collects no analytics, ships no third-party trackers, and keeps every byte of article content on your device.",
+  },
 });
 
 const lastUpdated = "May 27, 2026";

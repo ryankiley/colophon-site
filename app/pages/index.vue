@@ -1,24 +1,69 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: "Colophon — a calm, content-first RSS reader",
+usePageSetup({
+  seoMeta: {
+    description:
+      "A calm, content-first RSS and newsletter reader for iPhone and iPad. Now in TestFlight.",
+  },
+});
+
+// SoftwareApplication schema — gives search engines + AI agents the
+// metadata they need to surface the app as a product entity (name,
+// category, OS, free price, link to the App Store / TestFlight).
+useStructuredData({
+  "@type": "SoftwareApplication",
+  name: "Colophon",
+  applicationCategory: "NewsApplication",
+  operatingSystem: "iOS 26.0+",
   description:
-    "A calm, content-first RSS and newsletter reader for iPhone and iPad. Now in TestFlight.",
-  ogTitle: "Colophon",
-  ogDescription:
     "A calm, content-first RSS and newsletter reader for iPhone and iPad.",
-  ogType: "website",
-  ogUrl: "https://colophonrss.app/",
-  twitterCard: "summary_large_image",
+  url: "https://colophonrss.app",
+  downloadUrl: "https://testflight.apple.com/join/xCmmRp7d",
+  installUrl: "https://testflight.apple.com/join/xCmmRp7d",
+  releaseNotes: "Internal alpha — invite-only via TestFlight.",
+  author: {
+    "@type": "Person",
+    name: "Ryan Kiley",
+    url: "https://ryankiley.com",
+  },
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
 });
 </script>
 
 <template>
   <section class="hero">
-    <div class="hero__mark" aria-hidden="true">
-      <svg viewBox="0 0 140 149" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M73.5514 148.102C29.4879 148.102 -2.13166 112.607 0.112314 70.9911C2.15229 31.8236 34.5879 0 74.7754 0C91.5031 0 103.335 5.91592 114.351 5.91592C118.431 5.91592 124.347 5.09994 126.387 1.42799L129.243 1.22399L133.119 60.1792L130.263 60.5872C124.143 35.9035 102.315 3.67195 74.9794 3.67195C55.1916 3.67195 34.5879 22.6437 34.3839 55.4873C34.1799 92.2068 60.2915 118.93 92.3191 118.93C113.739 118.93 130.263 106.895 136.995 89.9629L139.443 90.5748C134.751 124.642 109.047 148.102 73.5514 148.102Z"
-        />
+    <div class="hero__icon" aria-hidden="true">
+      <svg
+        viewBox="0 0 1024 1024"
+        xmlns="http://www.w3.org/2000/svg"
+        class="app-icon"
+      >
+        <defs>
+          <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--icon-bg-top)" />
+            <stop offset="100%" stop-color="var(--icon-bg-bottom)" />
+          </linearGradient>
+          <filter id="emboss" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="6" />
+            <feOffset dx="0" dy="6" result="offset" />
+            <feComposite in="SourceAlpha" in2="offset" operator="arithmetic" k2="-1" k3="1" result="inner" />
+            <feFlood flood-color="var(--icon-glyph-shadow)" flood-opacity="0.35" />
+            <feComposite in2="inner" operator="in" />
+            <feComposite in="SourceGraphic" operator="over" />
+          </filter>
+        </defs>
+        <rect width="1024" height="1024" rx="229" ry="229" fill="url(#bg)" />
+        <g filter="url(#emboss)">
+          <path
+            transform="translate(140 130) scale(5.24)"
+            fill="var(--icon-glyph)"
+            fill-opacity="0.92"
+            d="M73.5514 148.102C29.4879 148.102 -2.13166 112.607 0.112314 70.9911C2.15229 31.8236 34.5879 0 74.7754 0C91.5031 0 103.335 5.91592 114.351 5.91592C118.431 5.91592 124.347 5.09994 126.387 1.42799L129.243 1.22399L133.119 60.1792L130.263 60.5872C124.143 35.9035 102.315 3.67195 74.9794 3.67195C55.1916 3.67195 34.5879 22.6437 34.3839 55.4873C34.1799 92.2068 60.2915 118.93 92.3191 118.93C113.739 118.93 130.263 106.895 136.995 89.9629L139.443 90.5748C134.751 124.642 109.047 148.102 73.5514 148.102Z"
+          />
+        </g>
       </svg>
     </div>
 
@@ -55,13 +100,67 @@ useSeoMeta({
   min-height: 80dvh;
 }
 
-.hero__mark {
-  width: clamp(3.5rem, 10vw, 5.5rem);
+// First-paint reveal — staggered fade-up of the hero pieces. Mirrors
+// the portfolio's reveal easing (Material classic ease-out, gentler
+// than the GSAP expo curve we use elsewhere) but skips IntersectionObserver
+// since every hero element is above the fold.
+.hero > * {
+  opacity: 0;
+  transform: translateY(0.75rem);
+  animation: hero-rise 720ms cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+.hero__icon { animation-delay: 80ms; }
+.hero__title { animation-delay: 220ms; }
+.hero__tagline { animation-delay: 340ms; }
+.hero__cta { animation-delay: 460ms; }
+.hero__status { animation-delay: 580ms; }
+
+@keyframes hero-rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero__icon {
+  width: clamp(5rem, 12vw, 7.5rem);
+  aspect-ratio: 1;
+
+  // Light-mode icon palette — matches the iOS app icon (cream squircle,
+  // dark C glyph with a soft shadow that reads as embossed). Dark-mode
+  // values overridden below.
+  --icon-bg-top: #f5f5f5;
+  --icon-bg-bottom: #d8d8d8;
+  --icon-glyph: #1c1c1c;
+  --icon-glyph-shadow: #000;
+
+  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.18))
+    drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08));
 
   svg {
     width: 100%;
     height: auto;
-    fill: var(--accent);
+    display: block;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .hero__icon {
+    --icon-bg-top: #2d2d2d;
+    --icon-bg-bottom: #181818;
+    --icon-glyph: #f0f0f0;
+    --icon-glyph-shadow: #000;
+    filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.55))
+      drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
   }
 }
 

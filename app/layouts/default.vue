@@ -16,7 +16,11 @@ const year = new Date().getFullYear();
       <p class="footer__meta">
         <span>colophonrss.app</span>
         <span aria-hidden="true">·</span>
-        <span>© {{ year }} Ryan Kiley</span>
+        <a
+          href="https://ryankiley.com"
+          rel="noopener author me"
+          class="footer__link"
+        >© {{ year }} Ryan Kiley</a>
       </p>
     </footer>
   </div>
@@ -47,6 +51,12 @@ const year = new Date().getFullYear();
   border-top: 1px solid var(--rule);
   color: var(--fg-muted);
   font-size: $type-small;
+  opacity: 0;
+  animation: footer-fade 720ms cubic-bezier(0, 0, 0.2, 1) 720ms forwards;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+  }
 
   @media (min-width: $breakpoint-tablet) {
     flex-direction: row;
@@ -74,5 +84,11 @@ const year = new Date().getFullYear();
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+@keyframes footer-fade {
+  to {
+    opacity: 1;
+  }
 }
 </style>

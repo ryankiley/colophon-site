@@ -15,10 +15,31 @@ export default defineNuxtConfig({
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+        // color-scheme tells the browser we support both modes BEFORE
+        // CSS loads, so form-controls / scrollbars resolve to the right
+        // mode on first paint without a flash.
         { name: "color-scheme", content: "light dark" },
+        // Apple-specific PWA + title hints. `mobile-web-app-capable` is
+        // the standard equivalent that other engines respect.
+        { name: "apple-mobile-web-app-title", content: "Colophon" },
+        { name: "format-detection", content: "telephone=no" },
       ],
       link: [
+        // Modern favicon stack — SVG primary (theme-aware), PNG fallback,
+        // apple-touch-icon for iOS Home Screen / share sheet thumbnails.
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "alternate icon", type: "image/png", sizes: "192x192", href: "/favicon-192.png" },
+        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+        // hreflang advertises the canonical language for AI / search.
+        { rel: "alternate", hreflang: "en", href: "https://colophonrss.app" },
+        // rel=me — IndieAuth / IndieWeb identity links. Reinforces the
+        // Person entity by tying the site to off-site profiles in a
+        // machine-readable way; picked up by Knowledge Graph builders.
+        { rel: "me", href: "https://ryankiley.com" },
+        { rel: "me", href: "https://github.com/ryankiley" },
+        // Preconnect to the TestFlight host so the CTA's first navigation
+        // gets a warm TLS handshake. cheap on hobby, real win on slow nets.
+        { rel: "preconnect", href: "https://testflight.apple.com", crossorigin: "" },
       ],
     },
   },

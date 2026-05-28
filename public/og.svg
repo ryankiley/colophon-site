@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="page" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fafafa"/>
+      <stop offset="100%" stop-color="#f0f0f0"/>
+    </linearGradient>
+    <linearGradient id="iconbg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5f5f5"/>
+      <stop offset="100%" stop-color="#d8d8d8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#page)"/>
+
+  <g transform="translate(490 70)">
+    <rect width="220" height="220" rx="49" ry="49" fill="url(#iconbg)"/>
+    <path transform="translate(30 27) scale(1.13)" fill="#1c1c1c" fill-opacity="0.92"
+      d="M73.5514 148.102C29.4879 148.102 -2.13166 112.607 0.112314 70.9911C2.15229 31.8236 34.5879 0 74.7754 0C91.5031 0 103.335 5.91592 114.351 5.91592C118.431 5.91592 124.347 5.09994 126.387 1.42799L129.243 1.22399L133.119 60.1792L130.263 60.5872C124.143 35.9035 102.315 3.67195 74.9794 3.67195C55.1916 3.67195 34.5879 22.6437 34.3839 55.4873C34.1799 92.2068 60.2915 118.93 92.3191 118.93C113.739 118.93 130.263 106.895 136.995 89.9629L139.443 90.5748C134.751 124.642 109.047 148.102 73.5514 148.102Z"/>
+  </g>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', Helvetica, Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="395" font-size="76" font-weight="700" letter-spacing="-2" fill="#1c1c1c" textLength="380" lengthAdjust="spacingAndGlyphs">Colophon</text>
+    <text x="600" y="445" font-size="24" font-weight="400" fill="#6a6a6a" textLength="520" lengthAdjust="spacingAndGlyphs">A calm, content-first reader for iPhone and iPad.</text>
+    <text x="600" y="560" font-size="18" font-weight="600" letter-spacing="1" fill="#1c1c1c" textLength="170" lengthAdjust="spacingAndGlyphs">colophonrss.app</text>
+  </g>
+</svg>
