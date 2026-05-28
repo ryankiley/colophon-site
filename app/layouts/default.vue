@@ -14,8 +14,6 @@ const year = new Date().getFullYear();
         <a href="mailto:ryanekiley@gmail.com" class="footer__link">Contact</a>
       </nav>
       <p class="footer__meta">
-        <span>colophonrss.app</span>
-        <span aria-hidden="true">·</span>
         <a
           href="https://ryankiley.com"
           rel="noopener author me"
