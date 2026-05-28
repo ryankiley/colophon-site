@@ -6,14 +6,7 @@
 // (CSP, HSTS, etc.) are set by vercel.json because there's no Nitro
 // runtime serving the pages.
 export default defineNuxtConfig({
-  modules: [
-    "@nuxtjs/robots",
-    "@nuxtjs/sitemap",
-    // Vercel Web Analytics + Speed Insights — cookieless, IP-anonymized
-    // at the edge, no cross-site tracking. Disclosed on /privacy.
-    "@vercel/analytics",
-    "@vercel/speed-insights/nuxt",
-  ],
+  modules: ["@nuxtjs/robots", "@nuxtjs/sitemap"],
   devtools: { enabled: false },
   compatibilityDate: "2026-05-27",
   app: {
@@ -30,6 +23,17 @@ export default defineNuxtConfig({
         // the standard equivalent that other engines respect.
         { name: "apple-mobile-web-app-title", content: "Colophon" },
         { name: "format-detection", content: "telephone=no" },
+      ],
+      script: [
+        // Vercel Web Analytics + Speed Insights served by the Vercel
+        // platform at these paths. Bare script tags instead of the
+        // @vercel/analytics Nuxt module — the module's runtime
+        // initialization threw "Cannot read properties of undefined
+        // (reading 'app')" against our static-preset SSG output, and
+        // these script-tag endpoints work the same with zero framework
+        // friction.
+        { src: "/_vercel/insights/script.js", defer: true },
+        { src: "/_vercel/speed-insights/script.js", defer: true },
       ],
       link: [
         // Modern favicon stack — SVG primary (theme-aware), PNG fallback,
