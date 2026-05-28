@@ -7,7 +7,7 @@ usePageSetup({
   },
 });
 
-const lastUpdated = "May 27, 2026";
+const lastUpdated = "May 28, 2026";
 </script>
 
 <template>
@@ -25,7 +25,35 @@ const lastUpdated = "May 27, 2026";
         Colophon is a reading app. It collects no analytics, ships no
         third-party trackers, and keeps every byte of article content on your
         device. This page describes what the app stores, what it sends over the
-        network, and where to ask questions.
+        network, and where to ask questions. It also discloses the (very small)
+        analytics this marketing website itself uses.
+      </p>
+    </section>
+
+    <section>
+      <h2>About this website</h2>
+      <p>
+        This website (colophonrss.app) is hosted on Vercel and uses Vercel's
+        <strong>Web Analytics</strong> and <strong>Speed Insights</strong>.
+        Both are cookieless. IP addresses are hashed at the edge and never
+        stored. There is no cross-site tracking, no advertising profile, and
+        no personal data collected.
+      </p>
+      <ul>
+        <li>
+          <strong>Web Analytics</strong> counts page views and tracks which
+          referrers send traffic to the site.
+        </li>
+        <li>
+          <strong>Speed Insights</strong> measures Core Web Vitals (loading,
+          interactivity, layout stability) so loading regressions are visible
+          to the author.
+        </li>
+      </ul>
+      <p>
+        See Vercel's
+        <a href="https://vercel.com/docs/analytics/privacy-policy" rel="noopener">Analytics privacy policy</a>
+        for the underlying behavior. The iOS app itself collects none of this.
       </p>
     </section>
 

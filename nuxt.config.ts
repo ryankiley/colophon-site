@@ -6,7 +6,14 @@
 // (CSP, HSTS, etc.) are set by vercel.json because there's no Nitro
 // runtime serving the pages.
 export default defineNuxtConfig({
-  modules: ["@nuxtjs/robots", "@nuxtjs/sitemap"],
+  modules: [
+    "@nuxtjs/robots",
+    "@nuxtjs/sitemap",
+    // Vercel Web Analytics + Speed Insights — cookieless, IP-anonymized
+    // at the edge, no cross-site tracking. Disclosed on /privacy.
+    "@vercel/analytics",
+    "@vercel/speed-insights/nuxt",
+  ],
   devtools: { enabled: false },
   compatibilityDate: "2026-05-27",
   app: {
