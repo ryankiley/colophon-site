@@ -259,8 +259,9 @@ useStructuredData({
   }
 
   // Keyboard focus adds a ring, offset by the page surface so the
-  // affordance never rests on colour contrast alone.
-  &:focus-visible {
+  // affordance never rests on colour contrast alone. Suppressed while
+  // pressed (:not(:active)) so the ring doesn't stack on the press state.
+  &:focus-visible:not(:active) {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
