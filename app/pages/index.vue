@@ -102,7 +102,10 @@ useStructuredData({
 // every hero element is above the fold.
 .hero > * {
   opacity: 0;
-  transform: translateY(0.75rem);
+  // Entrance uses the independent `translate` property (not `transform`)
+  // so the CTA's hover `transform` composes with it, rather than being
+  // overridden by this animation's forwards-fill.
+  translate: 0 0.75rem;
   animation: hero-rise $duration-reveal $ease-reveal forwards;
 }
 
@@ -121,7 +124,7 @@ useStructuredData({
 @keyframes hero-rise {
   to {
     opacity: 1;
-    transform: translateY(0);
+    translate: 0 0;
   }
 }
 
@@ -147,7 +150,13 @@ useStructuredData({
   .hero > * {
     animation: none;
     opacity: 1;
-    transform: none;
+    translate: none;
+  }
+
+  // Keep the CTA's colour + elevation state changes (no vestibular
+  // motion); only the hover/focus lift is removed.
+  .hero__cta {
+    --cta-lift: 0;
   }
 }
 
@@ -205,24 +214,75 @@ useStructuredData({
 }
 
 .hero__cta {
+  // Interaction-state palette as custom properties: the dark theme retunes
+  // the elevation without restating the rules, and reduced motion zeroes
+  // the lift in one place.
+  --cta-fill: var(--accent);
+  --cta-lift: -2px;
+  --cta-shadow-rest:
+    0 1px 2px rgb(0 0 0 / 0.10),
+    0 2px 6px rgb(0 0 0 / 0.06);
+  --cta-shadow-raised:
+    0 4px 10px rgb(0 0 0 / 0.14),
+    0 10px 24px rgb(0 0 0 / 0.10);
+  --cta-shadow-pressed: 0 1px 2px rgb(0 0 0 / 0.12);
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-top: 1rem;
   padding: 0.9rem 1.5rem;
-  background: var(--accent);
+  background: var(--cta-fill);
   color: var(--accent-fg);
   font-size: $type-body;
   font-weight: 500;
   border-radius: 999px;
+  box-shadow: var(--cta-shadow-rest);
+  // Interruptible (transition, not keyframes) so a reversed hover retargets
+  // mid-flight. Elevation and a state-layer colour shift carry the states.
   transition:
     transform $transition-fast $ease-out,
-    opacity $transition-fast $ease-out;
+    box-shadow $transition-fast $ease-out,
+    background-color $transition-fast $ease-out;
 
+  // Hover and keyboard focus share the raised look: lift + deeper shadow.
   &:hover,
   &:focus-visible {
-    transform: translateY(-1px);
-    opacity: 0.92;
+    box-shadow: var(--cta-shadow-raised);
+    transform: translateY(var(--cta-lift));
+  }
+
+  // State layer — mix the on-accent colour into the fill. The Material
+  // overlay model: theme-correct in both schemes, no hand-picked hues.
+  &:hover {
+    --cta-fill: color-mix(in oklab, var(--accent), var(--accent-fg) 8%);
+  }
+
+  // Keyboard focus adds a ring, offset by the page surface so the
+  // affordance never rests on colour contrast alone.
+  &:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  // Press: settle back down onto a tight shadow with a stronger layer, fast.
+  &:active {
+    --cta-fill: color-mix(in oklab, var(--accent), var(--accent-fg) 14%);
+    box-shadow: var(--cta-shadow-pressed);
+    transform: translateY(0);
+    transition-duration: 80ms;
+  }
+}
+
+// A light button on the near-black dark surface casts almost no dark
+// shadow, so dark mode leans on deeper alphas plus the lift to read raised.
+@media (prefers-color-scheme: dark) {
+  .hero__cta {
+    --cta-shadow-rest: 0 1px 3px rgb(0 0 0 / 0.5);
+    --cta-shadow-raised:
+      0 6px 18px rgb(0 0 0 / 0.6),
+      0 2px 6px rgb(0 0 0 / 0.4);
+    --cta-shadow-pressed: 0 1px 2px rgb(0 0 0 / 0.5);
   }
 }
 
