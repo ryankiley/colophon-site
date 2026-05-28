@@ -8,7 +8,7 @@
 //
 // Override the browser with CHROME_BIN=/path/to/chrome if it can't be found.
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, writeFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -36,7 +36,11 @@ if (!chrome) {
 const html = `<!doctype html><meta charset="utf-8">
 <style>html,body{margin:0;padding:0}svg{display:block}</style>
 ${readFileSync(svgPath, "utf8")}`;
-const htmlPath = join(tmpdir(), "colophon-og.html");
+// Private per-run temp dir — mkdtemp's unguessable suffix stops another
+// user on a shared machine from pre-creating/symlinking a predictable path
+// in the world-writable tmpdir.
+const tmpDir = mkdtempSync(join(tmpdir(), "colophon-og-"));
+const htmlPath = join(tmpDir, "og.html");
 writeFileSync(htmlPath, html);
 
 try {
@@ -55,5 +59,5 @@ try {
   );
   console.log(`Rendered ${outPath} (1200×630) from og.svg`);
 } finally {
-  rmSync(htmlPath, { force: true });
+  rmSync(tmpDir, { recursive: true, force: true });
 }

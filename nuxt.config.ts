@@ -66,14 +66,23 @@ export default defineNuxtConfig({
   site: {
     url: SITE_URL,
   },
-  // Nuxt is PINNED to exact 4.4.4 — 4.4.5 / 4.4.6 suppress inlineStyles
-  // and ship a broken SSR HTML payload.
+  // Nuxt 4.4.6 with inlineStyles intentionally OFF (see features below).
+  // With inlineStyles ON, Nuxt 4.4.5/4.4.6 inline the global CSS
+  // *non-deterministically* — the same source can build styled or silently
+  // unstyled (the portfolio took a prod outage on 4.4.6 this way, on the
+  // identical config). So rather than pin to 4.4.4 forever to keep that
+  // fragile feature, this site drops it: CSS ships as render-blocking
+  // <link>s (one clean paint, no FOUC). That kills the race (Nuxt can be
+  // bumped normally now) and leaves zero inline <style> blocks — which is
+  // why the CSP has no style-src 'unsafe-inline' (see vercel.json). 4.4.6
+  // also clears the dev-only __nuxt_island advisory (GHSA-g8wj-3cr3-6w7v),
+  // moot for this static deploy but free.
   features: {
-    inlineStyles: true,
+    inlineStyles: false,
     // The page has no client-side interactivity, so ship zero JS:
     // noScripts strips the Vue/Nuxt runtime, the hydration bootstrap, and
-    // the payload from the prerendered HTML — leaving pure HTML + inlined
-    // CSS. (The Vercel analytics tags above live in app.head and are
+    // the payload from the prerendered HTML — leaving pure HTML + a linked
+    // stylesheet. (The Vercel analytics tags above live in app.head and are
     // unaffected.) Flip this off per-route if a page ever needs JS.
     noScripts: true,
   },
