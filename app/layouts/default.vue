@@ -11,7 +11,7 @@ const year = new Date().getFullYear();
     <footer class="footer">
       <nav class="footer__nav" aria-label="Footer">
         <NuxtLink to="/privacy" class="footer__link">Privacy</NuxtLink>
-        <a href="mailto:ryanekiley@gmail.com" class="footer__link">Contact</a>
+        <a :href="`mailto:${CONTACT_EMAIL}`" class="footer__link">Contact</a>
       </nav>
       <p class="footer__meta">
         <a
@@ -32,7 +32,9 @@ const year = new Date().getFullYear();
   width: 100%;
   max-width: $max-content-width;
   margin: 0 auto;
-  padding-inline: $gutter;
+  // max() keeps the gutter on normal screens but expands to clear the
+  // notch / rounded corners on landscape iPhone (viewport-fit=cover).
+  padding-inline: max(#{$gutter}, env(safe-area-inset-left), env(safe-area-inset-right));
 }
 
 .main {
@@ -52,7 +54,7 @@ const year = new Date().getFullYear();
   color: var(--fg-muted);
   font-size: $type-small;
   opacity: 0;
-  animation: footer-fade 720ms cubic-bezier(0, 0, 0.2, 1) 720ms forwards;
+  animation: footer-fade $duration-reveal $ease-reveal $duration-reveal forwards;
   @media (prefers-reduced-motion: reduce) {
     animation: none;
     opacity: 1;

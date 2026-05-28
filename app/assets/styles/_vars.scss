@@ -6,16 +6,17 @@
 // Layout
 $max-content-width: 56rem;
 $gutter: clamp(1.25rem, 4vw, 2.5rem);
-$breakpoint-tablet: 48rem;
-$breakpoint-desktop: 72rem;
 
 // Type scale (rem)
 $type-hero: clamp(2.5rem, 6vw + 1rem, 4.5rem);
 $type-body: 1.0625rem;
 $type-small: 0.875rem;
-$type-micro: 0.75rem;
 
 // Motion
 $transition-fast: 200ms;
-$transition: 320ms;
 $ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+// First-paint reveal — a softer Material ease-out, distinct from
+// $ease-out, run once on load (hero pieces, then the footer).
+$duration-reveal: 720ms;
+$ease-reveal: cubic-bezier(0, 0, 0.2, 1);
