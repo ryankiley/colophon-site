@@ -1,15 +1,14 @@
 // Global SEO / social meta defaults. Lives in a plugin (not
 // `nuxt.config.ts` `app.head`) so the field names are typed via
 // `useSeoMeta` (catches `ogImage` typos, auto-maps `og:*` / `twitter:*`).
-// Per-page overrides happen via `usePageSetup` on each page.
-const SITE_NAME = "Colophon";
-const SITE_URL = "https://colophonrss.app";
-// SVG og image — most modern platforms (Slack, Discord, LinkedIn,
-// iMessage) render it correctly. Twitter falls back to text card, which
-// is acceptable for v1. Rendering a 1024-px PNG from the Xcode 26
-// .icon bundle isn't possible from the CLI — see
-// [[concepts/icon-composer-format-cli-extraction-gotcha]].
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og.svg`;
+// Per-page overrides happen via `usePageSetup` on each page. SITE_NAME /
+// SITE_URL are auto-imported from app/utils/site.
+
+// 1200×630 PNG, rendered from public/og.svg (see scripts/render-og.mjs).
+// PNG rather than SVG: Facebook, LinkedIn, and X reject SVG OG images,
+// and iMessage / Slack render them unreliably — so a raster is the only
+// format that previews everywhere the TestFlight link gets shared.
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og.png`;
 const DEFAULT_DESCRIPTION =
   "A calm, content-first RSS and newsletter reader for iPhone and iPad. Now in TestFlight.";
 
@@ -30,11 +29,9 @@ export default defineNuxtPlugin(() => {
     ogLocale: "en_US",
     ogDescription: DEFAULT_DESCRIPTION,
     ogImage: DEFAULT_OG_IMAGE,
+    ogImageType: "image/png",
     ogImageWidth: 1200,
     ogImageHeight: 630,
-    // og:image:type isn't accepted by useSeoMeta's type narrowing (it
-    // restricts to jpeg/gif/png) but most platforms infer the type from
-    // the .svg extension or the response Content-Type, so we skip it.
     ogImageAlt: `${SITE_NAME} — calm RSS reader for iPhone and iPad`,
     twitterTitle: SITE_NAME,
     twitterDescription: DEFAULT_DESCRIPTION,

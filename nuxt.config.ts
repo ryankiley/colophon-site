@@ -1,10 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 //
 // Static marketing site for the Colophon iOS app. Two routes (/ and
-// /privacy), no dynamic content, no auth, no analytics. SSG via
-// `nuxt generate` → deployed as static files on Vercel. Response headers
-// (CSP, HSTS, etc.) are set by vercel.json because there's no Nitro
-// runtime serving the pages.
+// /privacy), no dynamic content, no auth. SSG via `nuxt generate` →
+// deployed as static files on Vercel. Response headers (CSP, HSTS, etc.)
+// are set by vercel.json because there's no Nitro runtime serving the
+// pages, and the page ships no client-side JS (see features.noScripts).
+import { copyFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
+import { SITE_NAME, SITE_URL, TESTFLIGHT_URL } from "./app/utils/site";
+
 export default defineNuxtConfig({
   modules: ["@nuxtjs/robots", "@nuxtjs/sitemap"],
   devtools: { enabled: false },
@@ -19,19 +23,21 @@ export default defineNuxtConfig({
         // CSS loads, so form-controls / scrollbars resolve to the right
         // mode on first paint without a flash.
         { name: "color-scheme", content: "light dark" },
-        // Apple-specific PWA + title hints. `mobile-web-app-capable` is
-        // the standard equivalent that other engines respect.
-        { name: "apple-mobile-web-app-title", content: "Colophon" },
+        // Paint the mobile browser chrome to match the page surface in
+        // each mode (off-white light / near-black dark).
+        { name: "theme-color", content: "#fafafa", media: "(prefers-color-scheme: light)" },
+        { name: "theme-color", content: "#0e0e0e", media: "(prefers-color-scheme: dark)" },
+        { name: "apple-mobile-web-app-title", content: SITE_NAME },
         { name: "format-detection", content: "telephone=no" },
       ],
       script: [
-        // Vercel Web Analytics + Speed Insights served by the Vercel
-        // platform at these paths. Bare script tags instead of the
-        // @vercel/analytics Nuxt module — the module's runtime
-        // initialization threw "Cannot read properties of undefined
-        // (reading 'app')" against our static-preset SSG output, and
-        // these script-tag endpoints work the same with zero framework
-        // friction.
+        // Vercel Web Analytics + Speed Insights, served by the Vercel
+        // platform at these same-origin paths. Bare script tags rather
+        // than the @vercel/analytics module, whose runtime init threw
+        // "Cannot read properties of undefined (reading 'app')" against
+        // the static-preset SSG output; these endpoints work the same
+        // with zero framework friction. Deferred — and the only JS on
+        // the page, since the Nuxt runtime is stripped (features.noScripts).
         { src: "/_vercel/insights/script.js", defer: true },
         { src: "/_vercel/speed-insights/script.js", defer: true },
       ],
@@ -42,39 +48,66 @@ export default defineNuxtConfig({
         { rel: "alternate icon", type: "image/png", sizes: "192x192", href: "/favicon-192.png" },
         { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
         // hreflang advertises the canonical language for AI / search.
-        { rel: "alternate", hreflang: "en", href: "https://colophonrss.app" },
+        { rel: "alternate", hreflang: "en", href: SITE_URL },
         // rel=me — IndieAuth / IndieWeb identity links. Reinforces the
         // Person entity by tying the site to off-site profiles in a
         // machine-readable way; picked up by Knowledge Graph builders.
         { rel: "me", href: "https://ryankiley.com" },
         { rel: "me", href: "https://github.com/ryankiley" },
         // Preconnect to the TestFlight host so the CTA's first navigation
-        // gets a warm TLS handshake. cheap on hobby, real win on slow nets.
-        { rel: "preconnect", href: "https://testflight.apple.com", crossorigin: "" },
+        // gets a warm TLS handshake. No crossorigin — the CTA is a
+        // top-level (credentialed) navigation, which won't reuse an
+        // anonymous CORS socket.
+        { rel: "preconnect", href: new URL(TESTFLIGHT_URL).origin },
       ],
     },
   },
   css: ["~/assets/styles/main.scss"],
   site: {
-    url: "https://colophonrss.app",
+    url: SITE_URL,
   },
-  // ⚠ Nuxt is PINNED to exact 4.4.4 — same regression that bit the
-  // portfolio in 4.4.5 / 4.4.6 suppresses inlineStyles and ships a broken
-  // SSR HTML payload. See concepts/nuxt-pinned-to-4-4-4-inlinestyles.
+  // Nuxt is PINNED to exact 4.4.4 — 4.4.5 / 4.4.6 suppress inlineStyles
+  // and ship a broken SSR HTML payload.
   features: {
     inlineStyles: true,
+    // The page has no client-side interactivity, so ship zero JS:
+    // noScripts strips the Vue/Nuxt runtime, the hydration bootstrap, and
+    // the payload from the prerendered HTML — leaving pure HTML + inlined
+    // CSS. (The Vercel analytics tags above live in app.head and are
+    // unaffected.) Flip this off per-route if a page ever needs JS.
+    noScripts: true,
   },
   // Static deploy. Vercel detects this and serves the .output/public
   // tree as a static site (no Functions, no Edge runtime).
   nitro: {
     preset: "static",
+    // Prerender the catch-all (app/pages/[...slug].vue) at /not-found,
+    // then (see hooks below) copy it over 404.html — so unmatched routes
+    // get a real, prerendered not-found page instead of an empty SPA
+    // shell, which can't hydrate under features.noScripts.
+    prerender: {
+      routes: ["/not-found"],
+    },
+  },
+  // Overwrite the empty SPA-fallback 404.html with the prerendered
+  // /not-found page once prerendering has written every file. Runs under
+  // both `nuxt build` (Vercel's command) and `nuxt generate`.
+  hooks: {
+    "nitro:init"(nitro) {
+      nitro.hooks.hook("prerender:done", () => {
+        const pub = nitro.options.output.publicDir;
+        const src = [
+          join(pub, "not-found", "index.html"),
+          join(pub, "not-found.html"),
+        ].find((p) => existsSync(p));
+        if (src) copyFileSync(src, join(pub, "404.html"));
+      });
+    },
   },
   routeRules: {
     "/_nuxt/**": { headers: { "Cache-Control": "public, max-age=31536000, immutable" } },
   },
   experimental: {
-    payloadExtraction: "client",
-    crossOriginPrefetch: true,
     typedPages: true,
   },
   vite: {
@@ -85,15 +118,12 @@ export default defineNuxtConfig({
         },
       },
     },
-    build: {
-      modulePreload: { polyfill: false },
-    },
   },
   robots: {
     // Block AI training crawlers; allow live-retrieval / citation bots.
-    // Same split-policy used on the portfolio — keeps Perplexity-User,
-    // ChatGPT-User, Claude-User etc. open for "user asks an agent to
-    // visit this page" while denying the training-data sweepers.
+    // Keeps Perplexity-User, ChatGPT-User, Claude-User etc. open for
+    // "user asks an agent to visit this page" while denying the
+    // training-data sweepers.
     groups: [
       {
         userAgent: [
