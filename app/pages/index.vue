@@ -106,7 +106,13 @@ useStructuredData({
   animation: hero-rise $duration-reveal $ease-reveal forwards;
 }
 
-.hero__icon { animation-delay: 80ms; }
+// Icon rises with the others; its drop shadow then fades in once it has
+// settled (see --shadow-progress below), so it doesn't arrive flat.
+.hero__icon {
+  animation:
+    hero-rise $duration-reveal $ease-reveal 80ms forwards,
+    icon-shadow $duration-reveal $ease-reveal calc(80ms + #{$duration-reveal}) both;
+}
 .hero__title { animation-delay: 220ms; }
 .hero__tagline { animation-delay: 340ms; }
 .hero__cta { animation-delay: 460ms; }
@@ -116,6 +122,24 @@ useStructuredData({
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+// Registered so it can animate inside the filter's calc(). Drives the
+// icon drop-shadow alpha from 0 to full; defaults to 1 so the shadow is
+// present when the animation is absent (reduced motion).
+@property --shadow-progress {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+@keyframes icon-shadow {
+  from {
+    --shadow-progress: 0;
+  }
+  to {
+    --shadow-progress: 1;
   }
 }
 
@@ -139,8 +163,13 @@ useStructuredData({
   --icon-glyph: #1c1c1c;
   --icon-glyph-shadow: #000;
 
-  filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.18))
-    drop-shadow(0 4px 10px rgba(0, 0, 0, 0.08));
+  // Drop shadow scaled by --shadow-progress so it can fade in after the
+  // reveal. --shadow-near / --shadow-far are the per-theme peak alphas.
+  --shadow-near: 0.18;
+  --shadow-far: 0.08;
+  --shadow-progress: 1;
+  filter: drop-shadow(0 18px 36px rgb(0 0 0 / calc(var(--shadow-near) * var(--shadow-progress))))
+    drop-shadow(0 4px 10px rgb(0 0 0 / calc(var(--shadow-far) * var(--shadow-progress))));
 
   svg {
     width: 100%;
@@ -155,8 +184,9 @@ useStructuredData({
     --icon-bg-bottom: #181818;
     --icon-glyph: #f0f0f0;
     --icon-glyph-shadow: #000;
-    filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.55))
-      drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+    // Deeper peak alphas in dark mode; the fade-in is the same animation.
+    --shadow-near: 0.55;
+    --shadow-far: 0.35;
   }
 }
 
