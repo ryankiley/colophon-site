@@ -15,7 +15,14 @@ export function useStructuredData(data: Record<string, unknown>) {
     script: [
       {
         type: "application/ld+json",
-        innerHTML: JSON.stringify({ "@context": "https://schema.org", ...data }),
+        // Escape "<" so a "</script>" (or "<!--") inside any value can't
+        // break out of the surrounding <script> block. JSON.stringify
+        // alone doesn't neutralize it; inputs are static today, but this
+        // keeps the sink safe if it's ever fed dynamic data.
+        innerHTML: JSON.stringify({ "@context": "https://schema.org", ...data }).replace(
+          /</g,
+          "\\u003c",
+        ),
       },
     ],
   });
