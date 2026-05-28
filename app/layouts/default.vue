@@ -43,8 +43,10 @@ const year = new Date().getFullYear();
 
 .footer {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   padding-block: 2.5rem 2rem;
   border-top: 1px solid var(--rule);
   color: var(--fg-muted);
@@ -54,12 +56,6 @@ const year = new Date().getFullYear();
   @media (prefers-reduced-motion: reduce) {
     animation: none;
     opacity: 1;
-  }
-
-  @media (min-width: $breakpoint-tablet) {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
   }
 }
 
