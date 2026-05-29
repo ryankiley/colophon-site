@@ -77,7 +77,7 @@ useStructuredData({
     >
       <img
         class="hero__cta-icon"
-        src="/testflight.png"
+        src="/testflight.webp"
         alt=""
         width="256"
         height="256"
@@ -116,10 +116,13 @@ useStructuredData({
   animation: hero-rise $duration-reveal $ease-reveal forwards;
 }
 
-// Icon rises in with the rest of the hero; its (static) shadow rides along
-// on the reveal's opacity, so it doesn't arrive flat.
+// Icon rises in with the rest of the hero; its shadow then grows in from
+// nothing once it settles — a slower, more-eased swell (~2x the reveal
+// duration, ease-in-out) so the elevation arrives gently.
 .hero__icon {
-  animation: hero-rise $duration-reveal $ease-reveal 80ms forwards;
+  animation:
+    hero-rise $duration-reveal $ease-reveal 80ms forwards,
+    icon-shadow-rise 1440ms cubic-bezier(0.4, 0, 0.2, 1) 800ms backwards;
 }
 .hero__title { animation-delay: 220ms; }
 .hero__tagline { animation-delay: 340ms; }
@@ -140,6 +143,11 @@ useStructuredData({
     translate: none;
   }
 
+  // Shadow is present at full strength, no grow-in.
+  .hero__icon {
+    animation: none;
+  }
+
   // Keep the CTA's colour + elevation state changes (no vestibular
   // motion); only the hover/focus lift is removed.
   .hero__cta {
@@ -152,19 +160,17 @@ useStructuredData({
   aspect-ratio: 1;
 
   // Light-mode icon palette — matches the iOS app icon (cream squircle,
-  // dark C glyph with a soft shadow that reads as embossed). Dark-mode
-  // values overridden below.
+  // dark C glyph with a soft embossed shadow). Dark-mode values below.
   --icon-bg-top: #f5f5f5;
   --icon-bg-bottom: #d8d8d8;
   --icon-glyph: #1c1c1c;
   --icon-glyph-shadow: #000;
 
-  // Soft shadow via box-shadow, NOT filter: drop-shadow. WebKit renders a
-  // drop-shadow filter into the element's bounding BOX (a square behind the
-  // squircle, plus a band behind the title) once the element is promoted to a
-  // compositing layer — which the hero-rise reveal does. box-shadow tracks the
-  // border-radius (rx 229/1024 ≈ 22.36%, matching the squircle) and never hits
-  // the filter path, so it renders identically across engines.
+  // Soft elevation that GROWS IN from nothing once the icon settles (the
+  // icon-shadow-rise animation runs alongside the reveal, above). box-shadow,
+  // NOT filter: drop-shadow — WebKit boxes a drop-shadow filter into the
+  // element's bounding box once the reveal composites it. box-shadow tracks
+  // border-radius (rx 229/1024 ≈ 22.36%, matching the squircle).
   border-radius: 22.36%;
   box-shadow:
     0 18px 36px rgb(0 0 0 / 0.18),
@@ -177,15 +183,25 @@ useStructuredData({
   }
 }
 
+// Grows the shadow from nothing → the resting value above; `backwards` fill
+// keeps it absent until the delayed start (no `forwards`, so nothing stays
+// composited once it lands).
+@keyframes icon-shadow-rise {
+  from {
+    box-shadow:
+      0 0 0 rgb(0 0 0 / 0),
+      0 0 0 rgb(0 0 0 / 0);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   .hero__icon {
     --icon-bg-top: #2d2d2d;
     --icon-bg-bottom: #181818;
     --icon-glyph: #f0f0f0;
     --icon-glyph-shadow: #000;
-    // No shadow in dark mode: the page is pure black, so a shadow has
-    // nothing to fall on — and a soft black-on-near-black ramp is exactly
-    // what banded. The squircle stands on its own.
+    // No shadow in dark mode: a soft black shadow on the near-black page just
+    // bands. The squircle stands on its own.
     box-shadow: none;
   }
 }
