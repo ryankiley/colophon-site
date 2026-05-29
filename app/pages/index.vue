@@ -75,7 +75,14 @@ useStructuredData({
       :href="TESTFLIGHT_URL"
       rel="noopener"
     >
-      Join the TestFlight
+      <img
+        class="hero__cta-icon"
+        src="/testflight.png"
+        alt=""
+        width="256"
+        height="256"
+      />
+      <span>Join the TestFlight</span>
     </a>
 
     <p class="hero__status">
@@ -172,9 +179,10 @@ useStructuredData({
     --icon-bg-bottom: #181818;
     --icon-glyph: #f0f0f0;
     --icon-glyph-shadow: #000;
-    // Deeper shadow in dark mode.
-    filter: drop-shadow(0 18px 36px rgb(0 0 0 / 0.55))
-      drop-shadow(0 4px 10px rgb(0 0 0 / 0.35));
+    // No drop shadow in dark mode: the page is pure black, so a black
+    // shadow has nothing to fall on — and a soft black-on-near-black ramp
+    // is exactly what banded. The squircle stands on its own.
+    filter: none;
   }
 }
 
@@ -209,6 +217,7 @@ useStructuredData({
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.55em;
   margin-top: 1rem;
   padding: 0.9rem 1.5rem;
   background: var(--cta-fill);
@@ -252,6 +261,13 @@ useStructuredData({
     transform: translateY(0);
     transition-duration: 80ms;
   }
+}
+
+.hero__cta-icon {
+  width: 1.45em;
+  height: 1.45em;
+  flex: none;
+  display: block;
 }
 
 // A light button on the near-black dark surface casts almost no dark
