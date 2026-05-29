@@ -26,7 +26,7 @@ export default defineNuxtConfig({
         // Paint the mobile browser chrome to match the page surface in
         // each mode (off-white light / near-black dark).
         { name: "theme-color", content: "#fafafa", media: "(prefers-color-scheme: light)" },
-        { name: "theme-color", content: "#000000", media: "(prefers-color-scheme: dark)" },
+        { name: "theme-color", content: "#0e0e0e", media: "(prefers-color-scheme: dark)" },
         { name: "apple-mobile-web-app-title", content: SITE_NAME },
         { name: "format-detection", content: "telephone=no" },
       ],
