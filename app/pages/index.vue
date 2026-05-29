@@ -159,12 +159,16 @@ useStructuredData({
   --icon-glyph: #1c1c1c;
   --icon-glyph-shadow: #000;
 
-  // Static soft drop shadow with literal alphas — no custom-property /
-  // @property indirection. WebKit boxes the shadow when an @property-driven
-  // alpha is used inside a filter and the CSS is external (not inlined);
-  // literal values render identically everywhere. Dark mode deepens it below.
-  filter: drop-shadow(0 18px 36px rgb(0 0 0 / 0.18))
-    drop-shadow(0 4px 10px rgb(0 0 0 / 0.08));
+  // Soft shadow via box-shadow, NOT filter: drop-shadow. WebKit renders a
+  // drop-shadow filter into the element's bounding BOX (a square behind the
+  // squircle, plus a band behind the title) once the element is promoted to a
+  // compositing layer — which the hero-rise reveal does. box-shadow tracks the
+  // border-radius (rx 229/1024 ≈ 22.36%, matching the squircle) and never hits
+  // the filter path, so it renders identically across engines.
+  border-radius: 22.36%;
+  box-shadow:
+    0 18px 36px rgb(0 0 0 / 0.18),
+    0 4px 10px rgb(0 0 0 / 0.08);
 
   svg {
     width: 100%;
@@ -179,10 +183,10 @@ useStructuredData({
     --icon-bg-bottom: #181818;
     --icon-glyph: #f0f0f0;
     --icon-glyph-shadow: #000;
-    // No drop shadow in dark mode: the page is pure black, so a black
-    // shadow has nothing to fall on — and a soft black-on-near-black ramp
-    // is exactly what banded. The squircle stands on its own.
-    filter: none;
+    // No shadow in dark mode: the page is pure black, so a shadow has
+    // nothing to fall on — and a soft black-on-near-black ramp is exactly
+    // what banded. The squircle stands on its own.
+    box-shadow: none;
   }
 }
 
