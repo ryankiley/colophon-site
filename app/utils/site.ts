@@ -6,4 +6,4 @@ export const SITE_NAME = "Colophon";
 export const SITE_URL = "https://colophonrss.app";
 export const TESTFLIGHT_URL = "https://testflight.apple.com/join/xCmmRp7d";
 export const CONTACT_EMAIL = "ryanekiley@gmail.com";
-export const GITHUB_URL = "https://github.com/ryankiley/colophonrss";
+export const GITHUB_URL = "https://github.com/ryankiley/colophon-site";
