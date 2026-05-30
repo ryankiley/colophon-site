@@ -11,6 +11,7 @@ const year = new Date().getFullYear();
     <footer class="footer">
       <nav class="footer__nav" aria-label="Footer">
         <NuxtLink to="/privacy" class="footer__link">Privacy</NuxtLink>
+        <NuxtLink to="/terms" class="footer__link">Terms</NuxtLink>
         <a :href="`mailto:${CONTACT_EMAIL}`" class="footer__link">Contact</a>
       </nav>
       <p class="footer__meta">

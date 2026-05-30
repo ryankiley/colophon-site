@@ -3,10 +3,10 @@
 usePageSetup({
   title: "Privacy",
   description:
-    "Colophon collects no analytics, ships no third-party trackers, and keeps every byte of article content on your device.",
+    "Colophon collects no analytics and ships no third-party trackers. Your reading lives on your device and in your own private iCloud — there is no Colophon server.",
 });
 
-const lastUpdated = "May 28, 2026";
+const lastUpdated = "May 30, 2026";
 </script>
 
 <template>
@@ -21,11 +21,13 @@ const lastUpdated = "May 28, 2026";
 
     <section>
       <p>
-        Colophon is a reading app. It collects no analytics, ships no
-        third-party trackers, and keeps every byte of article content on your
-        device. This page describes what the app stores, what it sends over the
-        network, and where to ask questions. It also discloses the (very small)
-        analytics this marketing website itself uses.
+        Colophon is a reading app. It collects no analytics and ships no
+        third-party trackers. There is no Colophon account, no Colophon server,
+        and no Colophon-operated cloud: your reading lives on your device and,
+        if you turn on iCloud sync, in your <em>own</em> private iCloud, which
+        the author cannot read. This page describes what the app stores, what
+        it sends over the network and when, and where to ask questions. It also
+        discloses the (very small) analytics this marketing website itself uses.
       </p>
     </section>
 
@@ -57,17 +59,40 @@ const lastUpdated = "May 28, 2026";
     </section>
 
     <section>
-      <h2>What stays on your device</h2>
+      <h2>Where your data lives</h2>
       <p>
-        Your feeds, folders, read state, Later queue, and reading preferences
-        are stored locally using Apple's SwiftData framework. When iCloud sync
-        is enabled, this data is mirrored to your private iCloud database via
-        CloudKit. Apple holds those records; Colophon's author cannot read them.
+        Your feeds, folders, read state, Later queue, reading preferences, and
+        the article content Colophon saves for offline reading are stored
+        locally on your device using Apple's SwiftData framework. There is no
+        Colophon server and no Colophon account, so none of this is sent to the
+        author.
+      </p>
+      <p>
+        When you turn on iCloud sync, this data — including saved article
+        text — is mirrored to your <em>own</em> private iCloud database via
+        Apple's CloudKit, so your reading follows you across your devices. Those
+        records live in your personal iCloud account; the author cannot read
+        them. Sensitive fields — article titles, links, authors, excerpts, image
+        addresses, and your feed and folder names — are additionally encrypted,
+        so even Apple's sync servers store only ciphertext for those. Turn
+        iCloud sync off and everything stays on your device alone.
       </p>
       <p>
         AI summaries are generated on-device using Apple's Foundation Models
         framework. Article text never leaves your device for summarisation, and
-        summaries are not persisted to CloudKit.
+        summaries are not synced to iCloud — they are cached only on the device
+        that created them.
+      </p>
+    </section>
+
+    <section>
+      <h2>Keeping and deleting your data</h2>
+      <p>
+        Colophon keeps your articles until you remove them. You can set a
+        retention window in Settings to clear older read articles automatically,
+        delete individual articles or feeds at any time, and remove everything
+        by deleting the app. When iCloud sync is on, you can also manage or
+        delete Colophon's data from your device's iCloud storage settings.
       </p>
     </section>
 
@@ -91,10 +116,21 @@ const lastUpdated = "May 28, 2026";
           servers. Apple's privacy policy applies.
         </li>
         <li>
+          <strong>Optional OpenAI voices (off by default).</strong> Read-aloud
+          uses Apple's on-device speech by default, so nothing leaves your
+          device. If you switch on the experimental OpenAI voices and enter your
+          own OpenAI API key, the text to be spoken and your key are sent
+          directly from your device to OpenAI to generate the audio. Your key is
+          held in your device's Keychain; there is no Colophon server in
+          between, and the author never sees it. OpenAI's privacy policy governs
+          that request. Leave the feature off and nothing goes to OpenAI.
+        </li>
+        <li>
           <strong>Bug reports you choose to send.</strong> The in-app "Report a
-          bug" flow posts your text plus optional diagnostic details to a
-          GitHub issue on the private Colophon repository, using a token scoped
-          to that single repo's issues. Nothing else.
+          bug" flow posts your message — plus basic diagnostics if you include
+          them (app version, iOS version, and device model) — to an issue on the
+          Colophon repository on GitHub, using a token scoped to that single
+          repository's issues. Nothing else is sent.
         </li>
       </ul>
     </section>

@@ -172,7 +172,7 @@ export default defineNuxtConfig({
     // sitemap — and the prerender hook above makes /not-found a real 404, so
     // advertising it would point crawlers at a 404. With discovery off the
     // sitemap is exactly these URLs. Adding a page? Add it here.
-    urls: ["/", "/privacy"],
+    urls: ["/", "/privacy", "/terms"],
     excludeAppSources: true,
   },
 });
