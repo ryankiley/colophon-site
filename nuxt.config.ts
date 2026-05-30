@@ -110,11 +110,21 @@ export default defineNuxtConfig({
           join(pub, "not-found.html"),
         ].find((p) => existsSync(p));
         if (src) copyFileSync(src, join(pub, "404.html"));
-        // Drop the /not-found artifact now that 404.html is seeded from it:
-        // otherwise Vercel serves /not-found as a 200 twin of the 404 page.
-        // With it gone, unmatched routes fall through to 404.html (404 status).
+        // Drop the /not-found artifact now that 404.html is seeded from it,
+        // so it isn't served as a 200 twin of the 404 page.
         rmSync(join(pub, "not-found"), { recursive: true, force: true });
         rmSync(join(pub, "not-found.html"), { force: true });
+      });
+      // The SPA-fallback shell (200.html) is written AFTER prerender:done, so
+      // it must be removed on a later hook. Nitro emits 200.html — an empty
+      // `<div id="__nuxt">` shell — as a client-routing catch-all; on Vercel
+      // it shadows 404.html, so EVERY unmatched route resolves to that blank
+      // shell at HTTP 200 (a soft 404 — verified on prod 2026-05-30). Under
+      // features.noScripts the shell can't hydrate anyway, so it's dead weight.
+      // Removing it lets Vercel's static serving fall through to 404.html with
+      // a real 404. (index.html, the real home page, is untouched.)
+      nitro.hooks.hook("compiled", () => {
+        rmSync(join(nitro.options.output.publicDir, "200.html"), { force: true });
       });
     },
   },
