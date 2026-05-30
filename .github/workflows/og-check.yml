@@ -1,0 +1,44 @@
+# Guards the social card against silent drift. public/og.png is rendered
+# from public/og.svg by `npm run og` (scripts/render-og.mjs, headless Chrome
+# on macOS for real SF glyphs). If you edit the SVG and forget to re-render,
+# every shared TestFlight link previews the *old* card with no warning.
+#
+# This does NOT re-render on CI: the SVG sets its type in -apple-system, so a
+# Linux runner (no San Francisco font) produces a different PNG — a pixel diff
+# would always fail. Instead it enforces the rule that catches the real
+# mistake: if og.svg changed in this change, og.png must have changed too.
+name: og-card
+on:
+  pull_request:
+    paths: ["public/og.svg", "public/og.png"]
+  push:
+    branches: [main]
+    paths: ["public/og.svg", "public/og.png"]
+jobs:
+  in-sync:
+    name: og.png re-rendered when og.svg changes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fail if og.svg changed without re-rendering og.png
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PUSH_BASE: ${{ github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = "pull_request" ]; then base="$PR_BASE"; else base="$PUSH_BASE"; fi
+          # New branch / first push has no real base to diff against.
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+            echo "No base commit to compare against; skipping."
+            exit 0
+          fi
+          changed="$(git diff --name-only "$base" "$HEAD_SHA")"
+          echo "Changed files:"; echo "$changed"
+          if echo "$changed" | grep -qx 'public/og.svg' && ! echo "$changed" | grep -qx 'public/og.png'; then
+            echo "::error file=public/og.svg::og.svg changed but og.png was not re-rendered. Run 'npm run og' and commit public/og.png."
+            exit 1
+          fi
+          echo "OK — og card source and render are consistent."

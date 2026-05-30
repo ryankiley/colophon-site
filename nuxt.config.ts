@@ -5,7 +5,7 @@
 // deployed as static files on Vercel. Response headers (CSP, HSTS, etc.)
 // are set by vercel.json because there's no Nitro runtime serving the
 // pages, and the page ships no client-side JS (see features.noScripts).
-import { copyFileSync, existsSync } from "node:fs";
+import { copyFileSync, existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { SITE_NAME, SITE_URL, TESTFLIGHT_URL } from "./app/utils/site";
 
@@ -110,6 +110,11 @@ export default defineNuxtConfig({
           join(pub, "not-found.html"),
         ].find((p) => existsSync(p));
         if (src) copyFileSync(src, join(pub, "404.html"));
+        // Drop the /not-found artifact now that 404.html is seeded from it:
+        // otherwise Vercel serves /not-found as a 200 twin of the 404 page.
+        // With it gone, unmatched routes fall through to 404.html (404 status).
+        rmSync(join(pub, "not-found"), { recursive: true, force: true });
+        rmSync(join(pub, "not-found.html"), { force: true });
       });
     },
   },
@@ -161,6 +166,13 @@ export default defineNuxtConfig({
       "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   },
   sitemap: {
+    // Hand-curated allowlist of canonical, indexable URLs. excludeAppSources
+    // turns OFF the module's auto-discovery, which otherwise sweeps the
+    // prerendered /not-found route (from nitro.prerender.routes) into the
+    // sitemap — and the prerender hook above makes /not-found a real 404, so
+    // advertising it would point crawlers at a 404. With discovery off the
+    // sitemap is exactly these URLs. Adding a page? Add it here.
     urls: ["/", "/privacy"],
+    excludeAppSources: true,
   },
 });
