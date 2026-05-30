@@ -1,0 +1,7 @@
+// Global stylesheet — imported once via nuxt.config css array.
+// Emits :root tokens and base styles into the document. All other
+// component styles live in scoped <style> blocks.
+@use "foundations/reset";
+@use "foundations/color";
+@use "foundations/typography";
+@use "foundations/layout";

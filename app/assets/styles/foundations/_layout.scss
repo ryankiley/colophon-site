@@ -1,0 +1,32 @@
+@use "../vars" as *;
+
+// Base layout primitives.
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+#__nuxt {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: #{$type-small};
+  transform: translateY(-200%);
+  transition: transform #{$transition-fast} #{$ease-out};
+  z-index: 10;
+
+  &:focus {
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,38 @@
+// SCSS variables and tokens. Forwarded into every component via
+// _global.scss + Nuxt's vite additionalData, so any `<style>` block
+// can read these without an explicit @use. CSS-emitting foundations
+// live under foundations/ and are imported once from main.scss.
+
+// Layout
+$max-content-width: 56rem;
+$gutter: clamp(1.25rem, 4vw, 2.5rem);
+
+// ── Type scale ──────────────────────────────────────────────────────
+// This site's own values (a small marketing microsite), NOT the
+// portfolio's ramp — that ramp is art-directed and large (body 19–24px,
+// display 64px) on a variable webfont, which doesn't fit a calm reading
+// brand on the system font. What we borrow from the portfolio is the
+// *discipline*, not the numbers: every size travels with a co-designed
+// leading (below), and headings tighten their tracking. Body holds a
+// comfortable 17px. These tokens also consolidate clamps that were
+// previously inlined per-page (page titles, the hero tagline).
+$type-small: 0.875rem; // 14px — UI labels, captions, meta
+$type-body: 1.0625rem; // 17px — comfortable reading size
+$type-lead: clamp(1.125rem, 1.5vw + 0.75rem, 1.375rem); // hero tagline, lead text
+$type-h1: clamp(2rem, 4vw + 1rem, 2.75rem); // page titles (privacy / terms / 404)
+$type-hero: clamp(2.5rem, 6vw + 1rem, 4.5rem); // hero wordmark
+
+// Line-height vocabulary — the size+leading pairing the portfolio's type
+// foundation enforces, distilled to the two this site needs.
+$leading-tight: 1.15; // display / headings
+$leading-body: 1.5; // default body
+$leading-prose: 1.65; // long-form reading columns (privacy / terms)
+
+// Motion
+$transition-fast: 200ms;
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+// First-paint reveal — a softer Material ease-out, distinct from
+// $ease-out, run once on load (hero pieces, then the footer).
+$duration-reveal: 720ms;
+$ease-reveal: cubic-bezier(0, 0, 0.2, 1);

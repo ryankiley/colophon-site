@@ -1,0 +1,32 @@
+// Color tokens. Mirrors the iOS app's AccentColor (charcoal in light,
+// off-white in dark) but lifts the page bg / fg pair to off-white +
+// off-black so the surface reads like a calm reading page rather than
+// pure-white tech chrome.
+
+:root {
+  color-scheme: light dark;
+
+  // Light mode
+  --bg: #fafafa;
+  --fg: #1c1c1c;
+  --fg-muted: #6a6a6a;
+  --rule: #e6e6e6;
+  --accent: #1c1c1c;
+  --accent-fg: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e0e0e;
+    --fg: #e5e5e5;
+    --fg-muted: #999999;
+    --rule: #2a2a2a;
+    --accent: #e5e5e5;
+    --accent-fg: #0e0e0e;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}

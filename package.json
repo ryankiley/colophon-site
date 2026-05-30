@@ -1,0 +1,26 @@
+{
+  "name": "colophonrss",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "og": "node scripts/render-og.mjs",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "sass": "^1.99.0",
+    "typescript": "^6.0.0",
+    "vue-tsc": "^3.2.0"
+  },
+  "dependencies": {
+    "@nuxtjs/robots": "^6.0.7",
+    "@nuxtjs/sitemap": "^8.0.13",
+    "nuxt": "4.4.6",
+    "vue": "^3.5.0"
+  }
+}

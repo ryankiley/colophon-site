@@ -1,0 +1,47 @@
+@use "../vars" as *;
+
+// System font stack. Zero font payload — reinforces the "native
+// Apple-platforms reading client" framing. Same stack iOS/macOS use
+// for their own UI text. (No font-variation-settings: that's for the
+// portfolio's variable webfont; the system font takes numeric
+// font-weight instead.)
+
+:root {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+    "Helvetica", "Arial", sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: #{$type-body};
+  line-height: #{$leading-body};
+  letter-spacing: -0.005em;
+  // Typographic niceties in the spirit of the portfolio's type
+  // foundation: kerning, standard + contextual ligatures, and
+  // legibility-tuned rendering.
+  font-feature-settings: "kern", "liga", "clig", "calt";
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: #{$leading-tight};
+}
+
+// text-wrap discipline borrowed from the portfolio: balance short
+// display lines (headings) so they don't leave orphans; let body copy
+// use `pretty` to avoid runt last-lines without reflowing the block.
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
