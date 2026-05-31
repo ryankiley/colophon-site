@@ -167,8 +167,7 @@ const lastUpdated = "May 30, 2026";
     <section>
       <h2>Contact</h2>
       <p>
-        Questions about privacy or the app:
-        <a :href="`mailto:${CONTACT_EMAIL}`">{{ CONTACT_EMAIL }}</a>.
+        <a :href="`mailto:${CONTACT_EMAIL}`">email me</a>
       </p>
     </section>
   </article>
