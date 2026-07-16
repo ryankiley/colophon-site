@@ -126,11 +126,16 @@ const lastUpdated = "May 30, 2026";
           that request. Leave the feature off and nothing goes to OpenAI.
         </li>
         <li>
-          <strong>Bug reports you choose to send.</strong> The in-app "Report a
+          <strong>Reports you choose to send.</strong> The in-app "Report a
           bug" flow posts your message — plus basic diagnostics if you include
           them (app version, iOS version, and device model) — to an issue on the
-          Colophon repository on GitHub, using a token scoped to that single
-          repository's issues. Nothing else is sent.
+          Colophon repository on GitHub. The reader's "Report a readability
+          issue" flow additionally includes the article's URL and title and the
+          text Colophon extracted from it, so the extraction problem can be
+          reproduced. Both use a token scoped to that single repository's
+          issues, and both open <strong>public</strong> issues that anyone can
+          read — so avoid including anything you'd rather not make public.
+          Nothing is sent unless you tap Submit.
         </li>
       </ul>
     </section>
