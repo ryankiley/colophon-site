@@ -5,7 +5,14 @@
 // deployed as static files on Vercel. Response headers (CSP, HSTS, etc.)
 // are set by vercel.json because there's no Nitro runtime serving the
 // pages, and the page ships no client-side JS (see features.noScripts).
-import { copyFileSync, existsSync, rmSync } from "node:fs";
+import {
+  copyFileSync,
+  existsSync,
+  globSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
 import { SITE_NAME, SITE_URL, TESTFLIGHT_URL } from "./app/utils/site";
 
@@ -45,7 +52,17 @@ export default defineNuxtConfig({
         // Modern favicon stack — SVG primary (theme-aware), PNG fallback,
         // apple-touch-icon for iOS Home Screen / share sheet thumbnails.
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-        { rel: "alternate icon", type: "image/png", sizes: "192x192", href: "/favicon-192.png" },
+        // `rel` is a space-separated token list, but unhead 3 (via nuxt 4.5)
+        // types link[].rel as a discriminated union of *single* tokens, so the
+        // valid `alternate icon` form has no member to match. The cast only
+        // widens the type — emitted HTML is unchanged. unhead's own escape
+        // hatch, defineLink(), would mean importing a package we don't declare.
+        {
+          rel: "alternate icon" as unknown as "icon",
+          type: "image/png",
+          sizes: "192x192",
+          href: "/favicon-192.png",
+        },
         { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
         // hreflang advertises the canonical language for AI / search.
         { rel: "alternate", hreflang: "en", href: SITE_URL },
@@ -124,7 +141,28 @@ export default defineNuxtConfig({
       // Removing it lets Vercel's static serving fall through to 404.html with
       // a real 404. (index.html, the real home page, is untouched.)
       nitro.hooks.hook("compiled", () => {
-        rmSync(join(nitro.options.output.publicDir, "200.html"), { force: true });
+        const pub = nitro.options.output.publicDir;
+        rmSync(join(pub, "200.html"), { force: true });
+        // Strip nuxt-site-config's `window.__NUXT_SITE_CONFIG__` bootstrap.
+        // 4.1.5 resolves the SSR route rule as `routeRules.ssr ?? false`, so a
+        // route with no explicit ssr rule reads as client-rendered and it
+        // injects that inline <script> into every page. (The nullish fallback
+        // is written for Nitro 3; on Nitro 2 nothing sets the rule, and Nuxt
+        // strips `ssr: true` from routeRules as a no-op, so there is no config
+        // that suppresses it.) The tag is pure dead weight here — noScripts
+        // leaves no runtime to read it — and our `script-src 'self'` CSP blocks
+        // it, so it logs a violation on every page load. 4.1.1 compared
+        // `=== false` and never fired. Drop it back out of the emitted HTML.
+        // Revisit when nuxt-site-config fixes the fallback.
+        for (const rel of globSync("**/*.html", { cwd: pub })) {
+          const file = join(pub, rel);
+          const html = readFileSync(file, "utf8");
+          const stripped = html.replace(
+            /<script>window\.__NUXT_SITE_CONFIG__=.*?<\/script>/gs,
+            "",
+          );
+          if (stripped !== html) writeFileSync(file, stripped);
+        }
       });
     },
   },
