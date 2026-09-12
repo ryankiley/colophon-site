@@ -110,8 +110,7 @@ useStructuredData({
 .hero > * {
   opacity: 0;
   // Entrance uses the independent `translate` property (not `transform`)
-  // so the CTA's hover `transform` composes with it, rather than being
-  // overridden by this animation's forwards-fill.
+  // so it never collides with any element-level transform.
   translate: 0 0.75rem;
   animation: hero-rise $duration-reveal $ease-reveal forwards;
 }
@@ -146,12 +145,6 @@ useStructuredData({
   // Shadow is present at full strength, no grow-in.
   .hero__icon {
     animation: none;
-  }
-
-  // Keep the CTA's colour + elevation state changes (no vestibular
-  // motion); only the hover/focus lift is removed.
-  .hero__cta {
-    --cta-lift: 0;
   }
 }
 
@@ -222,10 +215,8 @@ useStructuredData({
 
 .hero__cta {
   // Interaction-state palette as custom properties: the dark theme retunes
-  // the elevation without restating the rules, and reduced motion zeroes
-  // the lift in one place.
+  // the elevation without restating the rules.
   --cta-fill: var(--accent);
-  --cta-lift: -2px;
   --cta-shadow-rest:
     0 1px 2px rgb(0 0 0 / 0.10),
     0 2px 6px rgb(0 0 0 / 0.06);
@@ -249,15 +240,13 @@ useStructuredData({
   // Interruptible (transition, not keyframes) so a reversed hover retargets
   // mid-flight. Elevation and a state-layer colour shift carry the states.
   transition:
-    transform $transition-fast $ease-out,
     box-shadow $transition-fast $ease-out,
     background-color $transition-fast $ease-out;
 
-  // Hover and keyboard focus share the raised look: lift + deeper shadow.
+  // Hover and keyboard focus share the raised look: a deeper shadow.
   &:hover,
   &:focus-visible {
     box-shadow: var(--cta-shadow-raised);
-    transform: translateY(var(--cta-lift));
   }
 
   // State layer — mix the on-accent colour into the fill. The Material
@@ -278,7 +267,6 @@ useStructuredData({
   &:active {
     --cta-fill: color-mix(in oklab, var(--accent), var(--accent-fg) 14%);
     box-shadow: var(--cta-shadow-pressed);
-    transform: translateY(0);
     transition-duration: 80ms;
   }
 }
@@ -291,7 +279,7 @@ useStructuredData({
 }
 
 // A light button on the near-black dark surface casts almost no dark
-// shadow, so dark mode leans on deeper alphas plus the lift to read raised.
+// shadow, so dark mode leans on deeper alphas to read raised.
 @media (prefers-color-scheme: dark) {
   .hero__cta {
     --cta-shadow-rest: 0 1px 3px rgb(0 0 0 / 0.5);
