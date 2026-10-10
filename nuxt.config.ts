@@ -154,13 +154,28 @@ export default defineNuxtConfig({
         // it, so it logs a violation on every page load. 4.1.1 compared
         // `=== false` and never fired. Drop it back out of the emitted HTML.
         // Revisit when nuxt-site-config fixes the fallback.
+        //
+        // Nuxt 4.6 also emits speculation rules on noScripts pages, asking the
+        // browser to prefetch *and prerender* same-origin links on hover.
+        // Prerendering runs the target page's scripts, and Vercel Web
+        // Analytics sends its pageview on load without checking
+        // document.prerendering, so every hovered-but-unclicked link would
+        // count as a visit. Keep the prefetch rules (a document fetch, no
+        // script runs) and drop the prerender list. vercel.json lets the
+        // inline rules through with 'inline-speculation-rules'.
         for (const rel of globSync("**/*.html", { cwd: pub })) {
           const file = join(pub, rel);
           const html = readFileSync(file, "utf8");
-          const stripped = html.replace(
-            /<script>window\.__NUXT_SITE_CONFIG__=.*?<\/script>/gs,
-            "",
-          );
+          const stripped = html
+            .replace(/<script>window\.__NUXT_SITE_CONFIG__=.*?<\/script>/gs, "")
+            .replace(
+              /(<script type="speculationrules">)(.*?)(<\/script>)/gs,
+              (_tag, open: string, json: string, close: string) => {
+                const rules = JSON.parse(json);
+                delete rules.prerender;
+                return open + JSON.stringify(rules) + close;
+              },
+            );
           if (stripped !== html) writeFileSync(file, stripped);
         }
       });
