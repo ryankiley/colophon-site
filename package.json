@@ -2,6 +2,9 @@
   "name": "colophonrss",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "26.x"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -12,7 +15,7 @@
     "typecheck": "nuxt typecheck"
   },
   "devDependencies": {
-    "@types/node": "^24",
+    "@types/node": "^26",
     "sass": "^1.99.0",
     "typescript": "^6.0.0",
     "vue-tsc": "^3.2.0"
